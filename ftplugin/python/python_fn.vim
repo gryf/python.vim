@@ -1,40 +1,15 @@
 " -*- vim -*-
 " FILE: python_fn.vim
-" LAST MODIFICATION: 2008-08-28 8:19pm
+" LAST MODIFICATION: 2017-05-28 17:47:13
 " (C) Copyright 2001-2005 Mikael Berthe <bmikael@lists.lilotux.net>
 " Maintained by Jon Franklin <jvfranklin@gmail.com>
-" Version: 1.13
+" Modifed by Roman Dobosz <gryf73@gmail.com>
+" Version: 1.14
 
 " USAGE:
-"
-" See README for installation.
-" You can set the global variable "g:py_select_leading_comments" to 0
-" if you don't want to select comments preceding a declaration (these
-" are usually the description of the function/class).
-" You can set the global variable "g:py_select_trailing_comments" to 0
-" if you don't want to select comments at the end of a function/class.
-" If these variables are not defined, both leading and trailing comments
-" are selected.
-" Example: (in your .vimrc) "let g:py_select_leading_comments = 0"
-" You may want to take a look at the 'shiftwidth' option for the
-" shift commands...
-"
-" REQUIREMENTS:
-" vim (>= 7)
-"
-" Shortcuts:
-"   ]t      -- Jump to beginning of block
-"   ]e      -- Jump to end of block
-"   ]v      -- Select (Visual Line Mode) block
-"   ]<      -- Shift block to left
-"   ]>      -- Shift block to right
-"   ]#      -- Comment selection
-"   ]u      -- Uncomment selection
-"   ]c      -- Select current/previous class
-"   ]d      -- Select current/previous function
-"   ]<up>   -- Jump to previous line with the same/lower indentation
-"   ]<down> -- Jump to next line with the same/lower indentation
+" See README.rst
 
+" Shortcuts:
 " Only do this when not done yet for this buffer
 if exists("b:loaded_py_ftplugin")
   finish
@@ -46,7 +21,7 @@ vmap ]t   :<C-U>PBOB<CR>m'gv``
 map  ]e   :PEoB<CR>
 vmap ]e   :<C-U>PEoB<CR>m'gv``
 
-map  ]v   ]tV]e
+map  vab   ]tV]e
 map  ]<   ]tV]e<
 vmap ]<   <
 map  ]>   ]tV]e>
@@ -57,76 +32,56 @@ vmap ]#   :call PythonCommentSelection()<CR>
 map  ]u   :call PythonUncommentSelection()<CR>
 vmap ]u   :call PythonUncommentSelection()<CR>
 
-map  ]c   :call PythonSelectObject("class")<CR>
-map  ]d   :call PythonSelectObject("function")<CR>
+map  vac  :call PythonSelectObject("class")<CR>
+map  vaf  :call PythonSelectObject("function")<CR>
 
 map  ]<up>    :call PythonNextLine(-1)<CR>
 map  ]<down>  :call PythonNextLine(1)<CR>
 " You may prefer use <s-up> and <s-down>... :-)
 
 " jump to previous class
-map  ]J   :call PythonDec("class", -1)<CR>
-vmap ]J   :call PythonDec("class", -1)<CR>
+map  [[   :call PythonDec("class", -1)<CR>
+vmap [[   :call PythonDec("class", -1)<CR>
 
 " jump to next class
-map  ]j   :call PythonDec("class", 1)<CR>
-vmap ]j   :call PythonDec("class", 1)<CR>
+map  ]]   :call PythonDec("class", 1)<CR>
+vmap ]]   :call PythonDec("class", 1)<CR>
 
 " jump to previous function
-map  ]F   :call PythonDec("function", -1)<CR>
-vmap ]F   :call PythonDec("function", -1)<CR>
+map  {{   :call PythonDec("function", -1)<CR>
+vmap {{   :call PythonDec("function", -1)<CR>
 
 " jump to next function
-map  ]f   :call PythonDec("function", 1)<CR>
-vmap ]f   :call PythonDec("function", 1)<CR>
+map  }}   :call PythonDec("function", 1)<CR>
+vmap }}   :call PythonDec("function", 1)<CR>
 
 " Menu entries
-nmenu <silent> &Python.Update\ IM-Python\ Menu 
-      \:call UpdateMenu()<CR>
+nmenu <silent> &Python.Update\ IM-Python\ Menu :call UpdateMenu()<CR>
 nmenu &Python.-Sep1- :
-nmenu <silent> &Python.Beginning\ of\ Block<Tab>[t 
-      \]t
-nmenu <silent> &Python.End\ of\ Block<Tab>]e 
-      \]e
+nmenu <silent> &Python.Beginning\ of\ Block<Tab>[t ]t
+nmenu <silent> &Python.End\ of\ Block<Tab>]e ]e
 nmenu &Python.-Sep2- :
-nmenu <silent> &Python.Shift\ Block\ Left<Tab>]< 
-      \]<
-vmenu <silent> &Python.Shift\ Block\ Left<Tab>]< 
-      \]<
-nmenu <silent> &Python.Shift\ Block\ Right<Tab>]> 
-      \]>
-vmenu <silent> &Python.Shift\ Block\ Right<Tab>]> 
-      \]>
+nmenu <silent> &Python.Shift\ Block\ Left<Tab>]< ]<
+vmenu <silent> &Python.Shift\ Block\ Left<Tab>]< ]<
+nmenu <silent> &Python.Shift\ Block\ Right<Tab>]> ]>
+vmenu <silent> &Python.Shift\ Block\ Right<Tab>]> ]>
 nmenu &Python.-Sep3- :
-vmenu <silent> &Python.Comment\ Selection<Tab>]# 
-      \]#
-nmenu <silent> &Python.Comment\ Selection<Tab>]# 
-      \]#
-vmenu <silent> &Python.Uncomment\ Selection<Tab>]u 
-      \]u
-nmenu <silent> &Python.Uncomment\ Selection<Tab>]u 
-      \]u
+vmenu <silent> &Python.Comment\ Selection<Tab>]# ]#
+nmenu <silent> &Python.Comment\ Selection<Tab>]# ]#
+vmenu <silent> &Python.Uncomment\ Selection<Tab>]u ]u
+nmenu <silent> &Python.Uncomment\ Selection<Tab>]u ]u
 nmenu &Python.-Sep4- :
-nmenu <silent> &Python.Previous\ Class<Tab>]J 
-      \]J
-nmenu <silent> &Python.Next\ Class<Tab>]j 
-      \]j
-nmenu <silent> &Python.Previous\ Function<Tab>]F 
-      \]F
-nmenu <silent> &Python.Next\ Function<Tab>]f 
-      \]f
+nmenu <silent> &Python.Previous\ Class<Tab>[[ [[
+nmenu <silent> &Python.Next\ Class<Tab>]] ]]
+nmenu <silent> &Python.Previous\ Function<Tab>{{ {{
+nmenu <silent> &Python.Next\ Function<Tab>}} }}
 nmenu &Python.-Sep5- :
-nmenu <silent> &Python.Select\ Block<Tab>]v 
-      \]v
-nmenu <silent> &Python.Select\ Function<Tab>]d 
-      \]d
-nmenu <silent> &Python.Select\ Class<Tab>]c 
-      \]c
+nmenu <silent> &Python.Select\ Block<Tab>vab vab
+nmenu <silent> &Python.Select\ Function<Tab>vaf vaf
+nmenu <silent> &Python.Select\ Class<Tab>vac vac
 nmenu &Python.-Sep6- :
-nmenu <silent> &Python.Previous\ Line\ wrt\ indent<Tab>]<up> 
-      \]<up>
-nmenu <silent> &Python.Next\ Line\ wrt\ indent<Tab>]<down> 
-      \]<down>
+nmenu <silent> &Python.Previous\ Line\ wrt\ indent<Tab>]<up> ]<up>
+nmenu <silent> &Python.Next\ Line\ wrt\ indent<Tab>]<down> ]<down>
 
 :com! PBoB execute "normal ".PythonBoB(line('.'), -1, 1)."G"
 :com! PEoB execute "normal ".PythonBoB(line('.'), 1, 1)."G"
@@ -191,7 +146,7 @@ endfunction
 " commentString is inserted in non-empty lines, and should be aligned with
 " the block
 function! PythonCommentSelection()  range
-  let commentString = "#"
+  let commentString = "# "
   let cl = a:firstline
   let ind = 1000    " I hope nobody use so long lines! :)
 
@@ -225,7 +180,7 @@ endfunction
 function! PythonUncommentSelection()  range
   " commentString could be different than the one from CommentSelection()
   " For example, this could be "# \\="
-  let commentString = "#"
+  let commentString = "# "
   let cl = a:firstline
   while (cl <= a:lastline)
     let ul = substitute(getline(cl),
