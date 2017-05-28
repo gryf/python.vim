@@ -7,11 +7,7 @@
 
 " USAGE:
 "
-" Save this file to $VIMFILES/ftplugin/python.vim. You can have multiple
-" python ftplugins by creating $VIMFILES/ftplugin/python and saving your
-" ftplugins in that directory. If saving this to the global ftplugin 
-" directory, this is the recommended method, since vim ships with an
-" ftplugin/python.vim file already.
+" See README for installation.
 " You can set the global variable "g:py_select_leading_comments" to 0
 " if you don't want to select comments preceding a declaration (these
 " are usually the description of the function/class).
@@ -84,55 +80,53 @@ vmap ]F   :call PythonDec("function", -1)<CR>
 map  ]f   :call PythonDec("function", 1)<CR>
 vmap ]f   :call PythonDec("function", 1)<CR>
 
-
-
 " Menu entries
 nmenu <silent> &Python.Update\ IM-Python\ Menu 
-    \:call UpdateMenu()<CR>
+      \:call UpdateMenu()<CR>
 nmenu &Python.-Sep1- :
 nmenu <silent> &Python.Beginning\ of\ Block<Tab>[t 
-    \]t
+      \]t
 nmenu <silent> &Python.End\ of\ Block<Tab>]e 
-    \]e
+      \]e
 nmenu &Python.-Sep2- :
 nmenu <silent> &Python.Shift\ Block\ Left<Tab>]< 
-    \]<
+      \]<
 vmenu <silent> &Python.Shift\ Block\ Left<Tab>]< 
-    \]<
+      \]<
 nmenu <silent> &Python.Shift\ Block\ Right<Tab>]> 
-    \]>
+      \]>
 vmenu <silent> &Python.Shift\ Block\ Right<Tab>]> 
-    \]>
+      \]>
 nmenu &Python.-Sep3- :
 vmenu <silent> &Python.Comment\ Selection<Tab>]# 
-    \]#
+      \]#
 nmenu <silent> &Python.Comment\ Selection<Tab>]# 
-    \]#
+      \]#
 vmenu <silent> &Python.Uncomment\ Selection<Tab>]u 
-    \]u
+      \]u
 nmenu <silent> &Python.Uncomment\ Selection<Tab>]u 
-    \]u
+      \]u
 nmenu &Python.-Sep4- :
 nmenu <silent> &Python.Previous\ Class<Tab>]J 
-    \]J
+      \]J
 nmenu <silent> &Python.Next\ Class<Tab>]j 
-    \]j
+      \]j
 nmenu <silent> &Python.Previous\ Function<Tab>]F 
-    \]F
+      \]F
 nmenu <silent> &Python.Next\ Function<Tab>]f 
-    \]f
+      \]f
 nmenu &Python.-Sep5- :
 nmenu <silent> &Python.Select\ Block<Tab>]v 
-    \]v
+      \]v
 nmenu <silent> &Python.Select\ Function<Tab>]d 
-    \]d
+      \]d
 nmenu <silent> &Python.Select\ Class<Tab>]c 
-    \]c
+      \]c
 nmenu &Python.-Sep6- :
 nmenu <silent> &Python.Previous\ Line\ wrt\ indent<Tab>]<up> 
-    \]<up>
+      \]<up>
 nmenu <silent> &Python.Next\ Line\ wrt\ indent<Tab>]<down> 
-    \]<down>
+      \]<down>
 
 :com! PBoB execute "normal ".PythonBoB(line('.'), -1, 1)."G"
 :com! PEoB execute "normal ".PythonBoB(line('.'), 1, 1)."G"
@@ -148,15 +142,15 @@ function! PythonBoB(line, direction, force_sel_comments)
   let indent_valid = strlen(getline(ln))
   let ln = ln + a:direction
   if (a:direction == 1) && (!a:force_sel_comments) && 
-      \ exists("g:py_select_trailing_comments") && 
-      \ (!g:py_select_trailing_comments)
+        \ exists("g:py_select_trailing_comments") && 
+        \ (!g:py_select_trailing_comments)
     let sel_comments = 0
   else
     let sel_comments = 1
   endif
 
   while((ln >= 1) && (ln <= line('$')))
-    if  (sel_comments) || (match(getline(ln), "^\\s*#") == -1)
+    if (sel_comments) || (match(getline(ln), "^\\s*#") == -1)
       if (!indent_valid)
         let indent_valid = strlen(getline(ln))
         let ind = indent(ln)
@@ -181,7 +175,7 @@ endfunction
 function! PythonDec(obj, direction)
   if (a:obj == "class")
     let objregexp = "^\\s*class\\s\\+[a-zA-Z0-9_]\\+"
-        \ . "\\s*\\((\\([a-zA-Z0-9_,. \\t\\n]\\)*)\\)\\=\\s*:"
+          \ . "\\s*\\((\\([a-zA-Z0-9_,. \\t\\n]\\)*)\\)\\=\\s*:"
   else
     let objregexp = "^\\s*\\(async def\\|def\\)\\s\\+[a-zA-Z0-9_]\\+\\s*(\\_[^:#]*)\\s*:"
   endif
@@ -235,7 +229,7 @@ function! PythonUncommentSelection()  range
   let cl = a:firstline
   while (cl <= a:lastline)
     let ul = substitute(getline(cl),
-             \"\\(\\s*\\)".commentString."\\(.*\\)$", "\\1\\2", "")
+          \"\\(\\s*\\)".commentString."\\(.*\\)$", "\\1\\2", "")
     call setline(cl, ul)
     let cl = cl + 1
   endwhile
@@ -264,9 +258,9 @@ function! PythonSelectObject(obj)
 
   if (a:obj == "class")
     let eod = "\\(^\\s*class\\s\\+[a-zA-Z0-9_]\\+\\s*"
-            \ . "\\((\\([a-zA-Z0-9_,. \\t\\n]\\)*)\\)\\=\\s*\\)\\@<=:"
+          \ . "\\((\\([a-zA-Z0-9_,. \\t\\n]\\)*)\\)\\=\\s*\\)\\@<=:"
   else
-   let eod = "\\(^\\s*\\(async def\\|def\\)\\s\\+[a-zA-Z0-9_]\\+\\s*(\\_[^:#]*)\\s*\\)\\@<=:"
+    let eod = "\\(^\\s*\\(async def\\|def\\)\\s\\+[a-zA-Z0-9_]\\+\\s*(\\_[^:#]*)\\s*\\)\\@<=:"
   endif
   " Look for the end of the declaration (not always the same line!)
   call search(eod, "")
@@ -296,7 +290,7 @@ function! PythonNextLine(direction)
 
   while((ln >= 1) && (ln <= line('$')))
     if (!indent_valid) && strlen(getline(ln)) 
-        break
+      break
     else
       if (strlen(getline(ln)))
         if (indent(ln) <= ind)
@@ -432,15 +426,4 @@ function! s:JumpToAndUnfold(line)
   endif
 endfunction
 
-"" This one will work only on vim 6.2 because of the try/catch expressions.
-" function! s:JumpToAndUnfoldWithExceptions(line)
-"  try
-"    execute 'normal '.a:line.'gg15zo'
-"  catch /^Vim\((\a\+)\)\=:E490:/
-"    " Do nothing, just consume the error
-"  endtry
-"endfunction
-
-
 " vim:set et sts=2 sw=2:
-
