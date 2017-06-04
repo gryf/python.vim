@@ -48,12 +48,12 @@ map  ]]   :call PythonDec("class", 1)<CR>
 vmap ]]   :call PythonDec("class", 1)<CR>
 
 " jump to previous function
-map  {{   :call PythonDec("function", -1)<CR>
-vmap {{   :call PythonDec("function", -1)<CR>
+map  ((   :call PythonDec("function", -1)<CR>
+vmap ((   :call PythonDec("function", -1)<CR>
 
 " jump to next function
-map  }}   :call PythonDec("function", 1)<CR>
-vmap }}   :call PythonDec("function", 1)<CR>
+map  ))   :call PythonDec("function", 1)<CR>
+vmap ))   :call PythonDec("function", 1)<CR>
 
 " Menu entries
 nmenu <silent> &Python.Update\ IM-Python\ Menu :call UpdateMenu()<CR>
@@ -73,8 +73,8 @@ nmenu <silent> &Python.Uncomment\ Selection<Tab>]u ]u
 nmenu &Python.-Sep4- :
 nmenu <silent> &Python.Previous\ Class<Tab>[[ [[
 nmenu <silent> &Python.Next\ Class<Tab>]] ]]
-nmenu <silent> &Python.Previous\ Function<Tab>{{ {{
-nmenu <silent> &Python.Next\ Function<Tab>}} }}
+nmenu <silent> &Python.Previous\ Function<Tab>{{ ((
+nmenu <silent> &Python.Next\ Function<Tab>}} ))
 nmenu &Python.-Sep5- :
 nmenu <silent> &Python.Select\ Block<Tab>vab vab
 nmenu <silent> &Python.Select\ Function<Tab>vaf vaf

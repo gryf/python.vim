@@ -20,8 +20,8 @@ Default shortcuts are as follows:
 
 - ``]]`` - jump to next class
 - ``[[`` - jump to previous class
-- ``}}`` - jump to next function or method
-- ``{[`` - jump to previous function or method
+- ``))`` - jump to next function or method
+- ``((`` - jump to previous function or method
 - ``]t`` - jump to beginning of block
 - ``]e`` - jump to end of block
 - ``]<up>`` - jump to previous line with the same/lower indentation
